@@ -1,0 +1,56 @@
+## counts_links table definition
+---
+name: counts_links
+primarykey: id
+engine: InnoDB
+charset: utf8
+autoincrement:
+    colname: id
+    start: 1
+cols:
+    id:
+        type: bigint
+        length: 20
+        params: NOT NULL
+    url:
+        type: varchar
+        length: 512
+        params: NOT NULL
+    urlhash:
+        type: varchar
+        length: 64
+        params: NOT NULL
+    counthits:
+        type: bigint
+        length: 20
+        params: NOT NULL
+    lasthit:
+        type: varchar
+        length: 20
+        params: NOT NULL
+    lastagent:
+        type: varchar
+        length: 128
+        params: NOT NULL
+    lastip:
+        type: varchar
+        length: 512
+        params: NOT NULL
+indices:
+    urlhash:
+        col: urlhash
+        isUnqiue: true
+    url:
+        col: url
+        isUnqiue: false
+    lastagent:
+        col: lastagent
+        isUnqiue: false
+    url_hits:
+        col:
+            url
+            urlhash
+            counthits
+        isUnqiue: false
+defaultvalues:
+    rows:

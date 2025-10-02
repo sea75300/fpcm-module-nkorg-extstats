@@ -1,0 +1,4 @@
+## Module controller map
+---
+extstats/statistics: statistics
+ajax/extstats/delete: deleteentry

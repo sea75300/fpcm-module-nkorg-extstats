@@ -1,0 +1,45 @@
+## counts_referrer table definition
+---
+name: counts_referrer
+primarykey: id
+engine: InnoDB
+charset: utf8
+autoincrement:
+    colname: id
+    start: 1
+cols:
+    id:
+        type: bigint
+        length: 20
+        params: NOT NULL
+    refurl:
+        type: varchar
+        length: 512
+        params: NOT NULL
+    refhash:
+        type: varchar
+        length: 64
+        params: NOT NULL
+    counthits:
+        type: bigint
+        length: 20
+        params: NOT NULL
+    lasthit:
+        type: varchar
+        length: 20
+        params: NOT NULL
+indices:
+    refhash:
+        col: refhash
+        isUnqiue: true
+    refurl:
+        col: refurl
+        isUnqiue: false
+    url_hits:
+        col:
+            refurl
+            refhash
+            counthits
+        isUnqiue: false
+defaultvalues:
+    rows:

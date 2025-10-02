@@ -1,0 +1,22 @@
+## Module config file
+---
+key: nkorg/extstats
+author: imagine
+name: Extended statistics
+description: "Extended statistics for articles, shares, coments and more."
+link: https://nobody-knows.org/
+version: 5.0.7
+help: 
+requirements:
+    system: 5.2.0-a1
+    php: 7.2.0
+tables:
+configOptions:
+    cookie_duration: 3600
+    timespan_default: 30
+    link_compress: 50
+    show_visitors: 0
+    url_base: "https://"
+    calc_unique: 1
+crons:
+    anonymizeLinks: 2419200

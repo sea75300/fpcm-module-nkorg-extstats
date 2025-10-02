@@ -1,0 +1,38 @@
+## counts_visits table definition
+---
+name: counts_visits
+primarykey: id
+engine: InnoDB
+charset: utf8
+autoincrement:
+    colname: id
+    start: 1
+cols:
+    id:
+        type: bigint
+        length: 20
+        params: NOT NULL
+    countdt:
+        type: bigint
+        length: 20
+        params: NOT NULL
+    countunique:
+        type: bigint
+        length: 20
+        params: NOT NULL
+    counthits:
+        type: bigint
+        length: 20
+        params: NOT NULL
+indices:
+    countdt:
+        col: countdt
+        isUnqiue: true
+    countdt_unique_hits:
+        col:
+            countdt
+            countunique
+            counthits
+        isUnqiue: false
+defaultvalues:
+    rows:

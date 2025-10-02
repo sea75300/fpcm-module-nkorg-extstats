@@ -1,0 +1,36 @@
+## Module configure config
+---
+cookie_duration:
+    type: textInput
+    conf:
+        type: number
+        text: COOKIE_DURATION_VALUE
+        icon: chart-line
+        size: lg
+timespan_default:
+    type: textInput
+    conf:
+        type: number
+        text: DEFAULT_GRAPH_TIMESPAN
+        icon: clock
+        size: lg
+link_compress:
+    type: textInput
+    conf:
+        type: number
+        text: CLEANUP_LIMIT
+        icon: eraser
+        size: lg
+show_visitors:
+    type: boolSelect
+    conf:
+        text: DEFAULT_SHOW_VISITORS
+        icon: language
+        size: lg
+url_base:
+    type: textInput
+    conf:
+        text: URL_BASE
+        type: url
+        icon: link
+        size: lg
