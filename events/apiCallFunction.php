@@ -18,7 +18,7 @@ final class apiCallFunction extends \fpcm\module\event {
      */
     protected $excludeCount = null;
 
-    public function run()
+    public function run() : \fpcm\module\eventResult
     {
         $fn = $this->data['name'];
         if (!method_exists($this, $fn)) {
