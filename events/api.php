@@ -6,7 +6,7 @@ use fpcm\classes\loader;
 use fpcm\model\system\session;
 use Jaybizzle\CrawlerDetect\CrawlerDetect;
 
-final class apiCallFunction extends \fpcm\module\event {
+final class api extends \fpcm\module\api {
 
     /**
      * @var session
@@ -18,33 +18,20 @@ final class apiCallFunction extends \fpcm\module\event {
      */
     protected $excludeCount = null;
 
-    public function run() : \fpcm\module\eventResult
+    public function init() : void
     {
-        $fn = $this->data['name'];
-        if (!method_exists($this, $fn)) {
-            trigger_error('Function '.$fn.' does not exists!');
-            return false;
-        }
-
         $this->session = loader::getObject('\fpcm\model\system\session');
         $this->excludeCount = $this->excludeCount() || $this->session->exists();
-        call_user_func([$this, $fn],$this->data['args']);
-        return true;
-    }
-
-    public function init()
-    {
-        return true;
     }
     
-    final protected function countAll()
+    final public function countAll()
     {
         $this->visitorsCount();
         $this->linksCount();
         $this->referrerCount();
     }
 
-    final protected function visitorsCount()
+    final public function visitorsCount()
     {
         if ($this->excludeCount) {
             return true;
@@ -81,7 +68,7 @@ final class apiCallFunction extends \fpcm\module\event {
         return true;
     }
 
-    final protected function linksCount()
+    final public function linksCount()
     {
         if ($this->excludeCount) {
             return true;
@@ -106,7 +93,7 @@ final class apiCallFunction extends \fpcm\module\event {
         return true;
     }
 
-    final protected function referrerCount()
+    final public function referrerCount()
     {
         if ($this->excludeCount) {
             return true;
