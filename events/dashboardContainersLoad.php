@@ -9,9 +9,8 @@ final class dashboardContainersLoad extends \fpcm\module\event {
         if (!$this->getObject()->getOption('show_visitors')) {
             return (new \fpcm\module\eventResult())->setData($this->data);
         }
-        
-        $this->data[] = 'fpcm\modules\nkorg\extstats\models\dashContainerStats';
-        
+
+        $this->data->addContainer('models\dashContainerStats');
         return (new \fpcm\module\eventResult())->setData($this->data);
     }
 
