@@ -5,10 +5,10 @@ author: imagine
 name: Extended statistics
 description: "Extended statistics for articles, shares, coments and more."
 link: https://nobody-knows.org/
-version: 5.3.0
+version: 5.3.1
 help: 
 requirements:
-    system: 5.3.0-a2
+    system: 5.3.0-b2
     php: 8.2.0
 tables:
 configOptions:

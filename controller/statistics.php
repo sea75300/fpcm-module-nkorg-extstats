@@ -202,11 +202,11 @@ final class statistics extends \fpcm\controller\abstracts\module\controller {
         $start = $this->request->fromPOST('dateFrom');
         $stop = $this->request->fromPOST('dateTo');
 
-        if ($start === null || !\fpcm\classes\tools::validateDateString($start)) {
+        if ($start === null || !\fpcm\classes\dateTimeHelper::validateDateString($start)) {
             $start = date('Y-m-d', time() - $this->config->module_nkorgextstats_timespan_default * 86400);
         }
 
-        if ($stop === null || trim($stop) && !\fpcm\classes\tools::validateDateString($stop)) {
+        if ($stop === null || trim($stop) && !\fpcm\classes\dateTimeHelper::validateDateString($stop)) {
             $stop = '';
         }
 
