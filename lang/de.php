@@ -47,6 +47,7 @@ $lang = [
     'LABEL_FIELD_CHARTTYPE' => 'Darstellen als',
     'LABEL_FIELD_SORTTYPE' => 'Sortieren nach',
     'LABEL_FIELD_CHARTMODE' => 'Gruppierung nach',
+    'FROM_PAGE' => 'Seite anzeigen',
     'SYSCHECK_FOLDER_MODULE_NKORGPOLLS' => 'Umfrage-Templates',
     'LOADING_LINKLIST' => 'Übersicht aufgerufener Seiten wird geladen...',
 ];

@@ -54,7 +54,7 @@ final class statistics extends \fpcm\controller\abstracts\module\controller {
             $this->addLangVarPrefix('FROMREFERRER') => \fpcm\modules\nkorg\extstats\models\counter::SRC_REFERRER
         ];
 
-        $this->getSettings($source, $chartType, $chartMode, $modeStr, $start, $stop, $sortType, $search);
+        $this->getSettings($source, $chartType, $chartMode, $modeStr, $start, $stop, $sortType, $search, $page);
         if (!trim($chartType)) {
             $chartType = \fpcm\components\charts\chart::TYPE_BAR;
         }
@@ -72,6 +72,7 @@ final class statistics extends \fpcm\controller\abstracts\module\controller {
         $this->view->assign('chartModes', $chartModes);
         $this->view->assign('chartMode', $chartMode);
         $this->view->assign('search', $search);
+        $this->view->assign('page', $page);
 
         $buttons = [
             (new \fpcm\view\helper\select('source'))
@@ -121,10 +122,30 @@ final class statistics extends \fpcm\controller\abstracts\module\controller {
             return true;
         }
 
-        $values = call_user_func([$counter, $fn], $start, $stop, $chartMode, $sortType, $search);
+        $fnMC = 'getMaxCount' . ucfirst($source);
+
+        if (method_exists($counter, $fnMC) && !$search) {
+            $maxCount = $counter->$fnMC($start, $stop);
+        }
+        else {
+            $maxCount = -1;
+        }
+
+        $pagerOptions = [];
+        if ($maxCount > \fpcm\modules\nkorg\extstats\models\counter::SELECT_OFFSET && !$search) {
+            $pages = round($maxCount / \fpcm\modules\nkorg\extstats\models\counter::SELECT_OFFSET);
+            $pagerTmp = range(1, $pages, 1);
+            $pagerOptions = array_combine($pagerTmp, $pagerTmp);
+        }
+        
+        $offset = ($page-1) * \fpcm\modules\nkorg\extstats\models\counter::SELECT_OFFSET;
+
+        $values = $counter->$fn($start, $stop, $chartMode, $sortType, $search, $offset);
         $this->view->assign('chart', $chart);
         $this->view->assign('notfound', empty($values) ? true : false);
         $this->view->assign('minDate', date('Y-m-d', $minMax['minDate']));
+        $this->view->assign('maxCount', $maxCount);
+        $this->view->assign('pagerOptions', $pagerOptions);
 
         $this->getDataview($values, $isLinks, $source);
 
@@ -165,7 +186,17 @@ final class statistics extends \fpcm\controller\abstracts\module\controller {
         return true;
     }
 
-    private function getSettings(&$source, &$chartType, &$chartMode, &$modeStr, &$start, &$stop, &$sortType, &$search)
+    private function getSettings(
+        &$source,
+        &$chartType,
+        &$chartMode,
+        &$modeStr,
+        &$start,
+        &$stop,
+        &$sortType,
+        &$search,
+        &$page
+    )
     {
         $source = $this->request->fromPOST('source');
         if ($source === null || !trim($source)) {
@@ -188,6 +219,14 @@ final class statistics extends \fpcm\controller\abstracts\module\controller {
         $sortType = $this->request->fromPOST('sortType', [
             \fpcm\model\http\request::FILTER_CASTINT
         ]);
+
+        $page = $this->request->fromPOST('page', [
+            \fpcm\model\http\request::FILTER_CASTINT
+        ]);
+
+        if (!$page) {
+            $page = 1;
+        }
 
         if ($chartMode === null || !trim($chartMode)) {
             $chartMode = $this->config->module_nkorgextstats_show_visitors

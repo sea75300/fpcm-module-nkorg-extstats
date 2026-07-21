@@ -21,6 +21,8 @@ class counter extends \fpcm\model\abstracts\tablelist {
     const SORT_LINK = 2;
     const SORT_REFERER = 3;
 
+    const SELECT_OFFSET = 500;
+
     const LINK_MAX_GRAPH = 15;
 
     protected $mode;
@@ -196,7 +198,15 @@ class counter extends \fpcm\model\abstracts\tablelist {
         return $data['labels'];
     }
 
-    public function fetchLinks($start, $stop, $mode = 1, $sort = 0, $search = '')
+    public function getMaxCountLinks($start, $stop) : int
+    {
+        $this->table = countLink::TABLE;
+        $this->createTimeVar = 'lasthit';
+
+        return $this->getMaxCount($start, $stop);
+    }
+
+    public function fetchLinks(?string $start, ?string $stop, int $mode = 1, int $sort = 0, string $search = '', int $offset = 0)
     {
         $this->table = countLink::TABLE;
 
@@ -213,6 +223,10 @@ class counter extends \fpcm\model\abstracts\tablelist {
         }
 
         $this->getOrder($sort, $where);
+
+        if ($search === null || !trim($search)) {
+            $where .= $this->dbcon->limitQuery(self::SELECT_OFFSET, $offset);
+        }
 
         $values = $this->dbcon->selectFetch(
             (new \fpcm\model\dbal\selectParams($this->table))
@@ -305,7 +319,15 @@ class counter extends \fpcm\model\abstracts\tablelist {
         return $data;
     }
 
-    public function fetchReferrer($start, $stop, $mode = 1, $sort = 0, $search = '')
+    public function getMaxCountReferrer($start, $stop) : int
+    {
+        $this->table = countReferrer::TABLE;
+        $this->createTimeVar = 'lasthit';
+
+        return $this->getMaxCount($start, $stop);
+    }
+
+    public function fetchReferrer($start, $stop, $mode = 1, $sort = 0, $search = '', int $offset = 0)
     {
         $this->table = countReferrer::TABLE;
 
@@ -322,6 +344,10 @@ class counter extends \fpcm\model\abstracts\tablelist {
         }
 
         $this->getOrder($sort === self::SORT_LINK ? self::SORT_REFERER : $sort, $where);
+
+        if ($search === null || !trim($search)) {
+            $where .= $this->dbcon->limitQuery(self::SELECT_OFFSET, $offset);
+        }
 
         $values = $this->dbcon->selectFetch(
             (new \fpcm\model\dbal\selectParams($this->table))
@@ -404,8 +430,6 @@ class counter extends \fpcm\model\abstracts\tablelist {
 
         $this->mode = (int) $mode;
 
-        $hash = \fpcm\classes\tools::getHash(__METHOD__ . json_encode(func_get_args()));
-
         $where = '1=1';
 
         $where .= (trim($start) ? ' AND ' . $this->createTimeVar . ' >= ' . strtotime($start) : '');
@@ -436,6 +460,40 @@ class counter extends \fpcm\model\abstracts\tablelist {
         $this->chart->setValues((new \fpcm\components\charts\chartItem($data['values'], $data['colors']))->setFill(true));
 
         return $data['labels'];
+    }
+
+    /**
+     * Get max count
+     * @param string|null $start
+     * @param string|null $stop
+     * @return int
+     */
+    private function getMaxCount(?string $start, ?string $stop) : int
+    {
+        if ($start === null) {
+            $start = '';
+        }
+
+        if ($stop === null) {
+            $stop = '';
+        }
+
+        $where = '1=1';
+
+        $params = [];
+
+        if (trim($start)) {
+            $params[] = strtotime($start);
+            $where .= ' AND ' . $this->createTimeVar . ' >= ?';
+        }
+
+        if (trim($stop)) {
+            $params[] = strtotime($stop);
+            $where .= ' AND ' . $this->createTimeVar . ' < ?';
+        }
+
+        $cnt = $this->dbcon->count($this->table, 'id', $where, $params);
+        return $cnt;
     }
 
     private function getLabel($data)

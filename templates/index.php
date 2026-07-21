@@ -66,6 +66,31 @@
 
 </div>
 
+<div class="row row-cols-1 row-cols-md-5 py-2">
+
+    <div class="col">
+    </div>
+
+    <div class="col">
+    </div>
+
+    <div class="col">
+    </div>
+
+    <div class="col">
+    </div>
+
+    <div class="<?php if (!$isLinks || !count($pagerOptions)) : ?>d-none<?php endif; ?>">
+        <?php $theView->select('page')
+                ->setText('MODULE_NKORGEXTSTATS_FROM_PAGE')
+                ->setOptions($pagerOptions)
+                ->setSelected($page)
+                ->setFirstOption(\fpcm\view\helper\select::FIRST_OPTION_DISABLED)
+                ->setLabelTypeFloat();
+        ?>
+    </div>
+</div>
+
 
 <?php if ($isLinks) : ?>
     <div id="fpcm-id-extstats-list-spinner" class="p-3 d-flex align-items-center">
